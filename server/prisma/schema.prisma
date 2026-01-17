@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Пользователь системы
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  accounts  Account[]
+  categories Category[]
+}
+
+// Счета (Наличные, Карта банка и т.д.)
+model Account {
+  id           Int           @id @default(autoincrement())
+  name         String
+  balance      Float         @default(0)
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+// Категории (Еда, Зарплата, Аренда)
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  type         String        // "INCOME" или "EXPENSE"
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+// Сами денежные операции
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  accountId   Int
+  account     Account  @relation(fields: [accountId], references: [id])
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+}
