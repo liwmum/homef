@@ -4,14 +4,16 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = "postgresql://postgres:password@localhost:5432/finance_db?schema=public"
 }
 
 // Пользователь системы
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  accounts  Account[]
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  name       String?    // Добавили это
+  accounts   Account[]
   categories Category[]
 }
 
